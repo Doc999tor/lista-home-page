@@ -720,7 +720,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 				<div class="elementor-element elementor-element-0205c6e elementor-button-align-center elementor-hidden-desktop elementor-invisible elementor-widget elementor-widget-form" data-id="0205c6e" data-element_type="widget" id="trial-form" data-settings="{&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
 				<div class="elementor-widget-container">
-					<form class="elementor-form" method="post" name="New Form" id="contact-form" action="http://localhost:8080/api/submit">
+					<form class="elementor-form" method="post" name="New Form" id="contact-form" action="/api/submit">
 			<input type="hidden" name="post_id" value="15">
 			<input type="hidden" name="form_id" value="0205c6e">
 			<input type="hidden" name="referer_title" value="">
@@ -1181,7 +1181,7 @@ window.addEventListener('load',()=>{
 
             try {
                 const formData = new FormData(contactForm);
-                const response = await fetch('http://localhost:8080/api/submit', {
+                const response = await fetch('/api/submit', {
                     method: 'POST',
                     body: formData
                 });
