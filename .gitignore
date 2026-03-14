@@ -3,3 +3,4 @@ config.local.php
 config.local.example.php
 
 logs/
+node_modules/
