@@ -186,17 +186,11 @@ app.post("/support", async (req, res) => {
     console.log(supportCrmBody);
 
     const [supportCrmResponse, supportForwardResponse] = await Promise.all([
-      // fetch(supportTemplate.url, {
-      //   method: "POST",
-      //   headers: supportTemplate.headers,
-      //   body: supportCrmBody,
-      //   signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      // }),
-      fetch(SUPPORT_FORWARD_URL, {
+      fetch(supportTemplate.url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(supportRequest),
-        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
+        headers: supportTemplate.headers,
+        body: supportCrmBody,
+        signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
       }),
       fetch(SUPPORT_FORWARD_URL, {
         method: "POST",
@@ -269,17 +263,11 @@ app.post("/contact_us", async (req, res) => {
     console.log(contactUsCrmBody);
 
     const [contactUsCrmResponse, contactUsForwardResponse] = await Promise.all([
-      // fetch(contactUsTemplate.url, {
-      //   method: "POST",
-      //   headers: contactUsTemplate.headers,
-      //   body: contactUsCrmBody,
-      //   signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      // }),
-      fetch(CONTACT_US_FORWARD_URL, {
+      fetch(contactUsTemplate.url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contactUsRequest),
-        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
+        headers: contactUsTemplate.headers,
+        body: contactUsCrmBody,
+        signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
       }),
       fetch(CONTACT_US_FORWARD_URL, {
         method: "POST",
