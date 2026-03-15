@@ -165,7 +165,7 @@ function buildTemplateBody(templateBody, requestData) {
     .replace(/\{email\}/g, encodeURIComponent(requestData.email));
 }
 
-app.get("/healthz-support", (_req, res) => {
+app.get("/healthz-gn5bre", (_req, res) => {
   res.status(200).json({ ok: true });
 });
 
@@ -240,10 +240,6 @@ app.post("/support", async (req, res) => {
       error: error.message,
     });
   }
-});
-
-app.get("/healthz-contact-us", (_req, res) => {
-  res.status(200).json({ ok: true });
 });
 
 app.post("/contact_us", async (req, res) => {
