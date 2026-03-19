@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const crypto = require("node:crypto");
 
 const PORT = Number.parseInt(process.env.PORT || "3000", 10);
 const SUPPORT_CRM_TIMEOUT_MS = Number.parseInt(
@@ -19,10 +20,41 @@ const CONTACT_US_FORWARD_URL =
 const CONTACT_US_CURL_TEMPLATE_PATH = path.join(__dirname, "contact_us.curl");
 const ENABLE_TEMP_CORS = process.env.ENABLE_TEMP_CORS !== "false";
 const TEMP_CORS_ORIGIN = process.env.TEMP_CORS_ORIGIN || "*";
+const REQUEST_LOGGING_ENABLED = process.env.REQUEST_LOGGING_ENABLED !== "false";
+const REQUEST_LOG_EXCLUDE_HEALTHCHECKS = process.env.REQUEST_LOG_EXCLUDE_HEALTHCHECKS !== "false";
 
 const app = express();
 
 app.disable("x-powered-by");
+app.set("trust proxy", true);
+
+if (REQUEST_LOGGING_ENABLED) {
+  app.use((req, res, next) => {
+    const startTime = process.hrtime.bigint();
+    const requestId = req.header("x-request-id") || crypto.randomUUID();
+
+    res.setHeader("X-Request-Id", requestId);
+
+    res.on("finish", () => {
+      if (REQUEST_LOG_EXCLUDE_HEALTHCHECKS && req.path.startsWith("/healthz")) {
+        return;
+      }
+
+      const elapsedMs = Number(process.hrtime.bigint() - startTime) / 1e6;
+      console.log("api_request", {
+        requestId,
+        method: req.method,
+        path: req.path,
+        status: res.statusCode,
+        duration_ms: Number(elapsedMs.toFixed(2)),
+        ip: req.ip,
+        user_agent: req.get("user-agent") || "",
+      });
+    });
+
+    next();
+  });
+}
 
 // TEMP CORS BLOCK (remove when no longer needed)
 if (ENABLE_TEMP_CORS) {
