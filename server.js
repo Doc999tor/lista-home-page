@@ -164,6 +164,31 @@ function withTimeoutSignal(timeoutMs) {
   return AbortSignal.timeout(timeoutMs);
 }
 
+async function fetchWithDetails(url, options, name) {
+  try {
+    const response = await fetch(url, options);
+    const bodyText = await response.text();
+    return { ok: true, response, bodyText };
+  } catch (error) {
+    console.error("outbound_fetch_error", {
+      target: name,
+      url,
+      message: error?.message,
+      cause: error?.cause?.message || null,
+      code: error?.cause?.code || null,
+    });
+
+    return {
+      ok: false,
+      error: {
+        message: error?.message || "fetch failed",
+        cause: error?.cause?.message || null,
+        code: error?.cause?.code || null,
+      },
+    };
+  }
+}
+
 function getSupportRequestFields(body) {
   const nestedFormFields = body?.form_fields || {};
 
@@ -217,26 +242,34 @@ app.post("/support", async (req, res) => {
     const supportCrmBody = buildTemplateBody(supportTemplate.bodyTemplate, supportRequest);
     console.log(supportCrmBody);
 
-    const [supportCrmResponse, supportForwardResponse] = await Promise.all([
-      fetch(supportTemplate.url, {
+    const [supportCrmResult, supportForwardResult] = await Promise.all([
+      fetchWithDetails(supportTemplate.url, {
         method: "POST",
         headers: supportTemplate.headers,
         body: supportCrmBody,
         signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      }),
-      fetch(SUPPORT_FORWARD_URL, {
+      }, "support_crm"),
+      fetchWithDetails(SUPPORT_FORWARD_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(supportRequest),
         signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
-      }),
+      }, "support_forward"),
     ]);
 
-    const supportCrmText = await supportCrmResponse.text();
-    const supportForwardText = await supportForwardResponse.text();
-    console.log(supportCrmResponse);
-    console.log(supportForwardResponse);
-    console.log({ supportCrmText, supportForwardText });
+    if (!supportCrmResult.ok || !supportForwardResult.ok) {
+      return res.status(500).json({
+        success: false,
+        message: "Unexpected error while forwarding submission",
+        support_crm_error: supportCrmResult.ok ? null : supportCrmResult.error,
+        support_forward_error: supportForwardResult.ok ? null : supportForwardResult.error,
+      });
+    }
+
+    const supportCrmResponse = supportCrmResult.response;
+    const supportForwardResponse = supportForwardResult.response;
+    const supportCrmText = supportCrmResult.bodyText;
+    const supportForwardText = supportForwardResult.bodyText;
 
     if (!supportCrmResponse.ok || !supportForwardResponse.ok) {
       return res.status(502).json({
@@ -290,26 +323,34 @@ app.post("/contact_us", async (req, res) => {
     const contactUsCrmBody = buildTemplateBody(contactUsTemplate.bodyTemplate, contactUsRequest);
     console.log(contactUsCrmBody);
 
-    const [contactUsCrmResponse, contactUsForwardResponse] = await Promise.all([
-      fetch(contactUsTemplate.url, {
+    const [contactUsCrmResult, contactUsForwardResult] = await Promise.all([
+      fetchWithDetails(contactUsTemplate.url, {
         method: "POST",
         headers: contactUsTemplate.headers,
         body: contactUsCrmBody,
         signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      }),
-      fetch(CONTACT_US_FORWARD_URL, {
+      }, "contact_us_crm"),
+      fetchWithDetails(CONTACT_US_FORWARD_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(contactUsRequest),
         signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
-      }),
+      }, "contact_us_forward"),
     ]);
 
-    const contactUsCrmText = await contactUsCrmResponse.text();
-    const contactUsForwardText = await contactUsForwardResponse.text();
-    console.log(contactUsCrmResponse);
-    console.log(contactUsForwardResponse);
-    console.log({ contactUsCrmText, contactUsForwardText });
+    if (!contactUsCrmResult.ok || !contactUsForwardResult.ok) {
+      return res.status(500).json({
+        success: false,
+        message: "Unexpected error while forwarding submission",
+        contact_us_crm_error: contactUsCrmResult.ok ? null : contactUsCrmResult.error,
+        contact_us_forward_error: contactUsForwardResult.ok ? null : contactUsForwardResult.error,
+      });
+    }
+
+    const contactUsCrmResponse = contactUsCrmResult.response;
+    const contactUsForwardResponse = contactUsForwardResult.response;
+    const contactUsCrmText = contactUsCrmResult.bodyText;
+    const contactUsForwardText = contactUsForwardResult.bodyText;
 
     if (!contactUsCrmResponse.ok || !contactUsForwardResponse.ok) {
       return res.status(502).json({
@@ -339,10 +380,15 @@ app.post("/contact_us", async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("contact_us_unhandled_error", {
+      message: error?.message,
+      cause: error?.cause?.message || null,
+    });
     return res.status(500).json({
       success: false,
       message: "Unexpected error while forwarding submission",
-      error: error.message,
+      error: error?.message || "unknown_error",
+      cause: error?.cause?.message || null,
     });
   }
 });
