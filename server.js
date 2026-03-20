@@ -13,10 +13,10 @@ const SUPPORT_FORWARD_TIMEOUT_MS = Number.parseInt(
   10
 );
 const SUPPORT_FORWARD_URL =
-  process.env.SUPPORT_FORWARD_URL || process.env.LEADS_URL || "http://localhost:83/home/support-QzXp8v";
+  process.env.SUPPORT_FORWARD_URL || process.env.LEADS_URL || "https://atzma.im/home/support-QzXp8v";
 const SUPPORT_CURL_TEMPLATE_PATH = path.join(__dirname, "support.curl");
 const CONTACT_US_FORWARD_URL =
-  process.env.CONTACT_US_FORWARD_URL || "http://localhost:83/home/leads-9rY3cq";
+  process.env.CONTACT_US_FORWARD_URL || "https://atzma.im/home/leads-9rY3cq";
 const CONTACT_US_CURL_TEMPLATE_PATH = path.join(__dirname, "contact_us.curl");
 const ENABLE_TEMP_CORS = process.env.ENABLE_TEMP_CORS !== "false";
 const TEMP_CORS_ORIGIN = process.env.TEMP_CORS_ORIGIN || "*";
