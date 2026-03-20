@@ -720,7 +720,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 				<div class="elementor-element elementor-element-0205c6e elementor-button-align-center elementor-hidden-desktop elementor-invisible elementor-widget elementor-widget-form" data-id="0205c6e" data-element_type="widget" id="trial-form" data-settings="{&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
 				<div class="elementor-widget-container">
-					<form class="elementor-form" method="post" name="New Form" id="contact-form" action="/api/submit">
+					<form class="" method="post" name="Contact Us Form" id="contact-form" action="/contact_us">
 			<input type="hidden" name="post_id" value="15">
 			<input type="hidden" name="form_id" value="0205c6e">
 			<input type="hidden" name="referer_title" value="">
@@ -728,19 +728,24 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 							<input type="hidden" name="queried_id" value="15">
 
 			<div class="elementor-form-fields-wrapper elementor-labels-">
-								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-fullname elementor-col-100 elementor-field-required">
+								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-fullname elementor-col-100">
 												<label for="form-field-fullname" class="elementor-field-label elementor-screen-only">
-								שם בעל/ת העסק							</label>
-														<input size="1" type="text" name="form_fields[fullname]" id="form-field-fullname" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="שם בעל/ת העסק" required="required" aria-required="true">
+								שם בעל העסק							</label>
+														<input size="1" type="text" name="form_fields[fullname]" id="form-field-fullname" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="שם בעל העסק">
 											</div>
 								<div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone_num elementor-col-100 elementor-field-required">
 												<label for="form-field-phone_num" class="elementor-field-label elementor-screen-only">
-								מס' טלפון							</label>
-								<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מס' טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20">
+								מספר טלפון							</label>
+								<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מספר טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20" style="text-align: end;">
 
 						</div>
+								<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-issue_description elementor-col-100">
+												<label for="form-field-issue_description" class="elementor-field-label elementor-screen-only">
+								ספרו עליכם							</label>
+														<textarea class="elementor-field-textual elementor-field elementor-size-md" name="form_fields[issue_description]" id="form-field-issue_description" rows="4" placeholder="ספרו עליכם"></textarea>
+											</div>
 								<div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
-					<button type="submit" class="elementor-button elementor-size-md">
+					<button type="submit" class="elementor-button elementor-size-md" id="submit-btn">
 						<span>
 															<span class=" elementor-button-icon">
 																										</span>
@@ -1059,7 +1064,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 				<div class="elementor-element elementor-element-d84e478 elementor-widget elementor-widget-heading" data-id="d84e478" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-			<h2 class="elementor-heading-title elementor-size-medium"><font color="#ccc">Lista Smart Manager 2023</font>
+			<h2 class="elementor-heading-title elementor-size-medium"><font color="#ccc">Lista Smart Manager 2026</font>
 |
 <span style="font-family: arial;">
 הזכויות שמורות
@@ -1149,59 +1154,90 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 			<script type="text/javascript">
 
 				/* OceanWP JS */
-				let phone_input
-window.addEventListener('load',()=>{
-    phone_input=document.getElementById("form-field-phone_num");
-    if(phone_input){
-        phone_input.setAttribute('minlength','9');
-        phone_input.setAttribute('maxlength','10');
-        phone_input.addEventListener('input',function(){
-            this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*?)\..*/g,'$1');
-            this.value=this.value.substring(0,10);
+				let phone_input;
+window.addEventListener('load', () => {
+    phone_input = document.getElementById('form-field-phone_num');
+    const contactForm = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnTextSpan = submitBtn ? submitBtn.querySelector('.elementor-button-text') : null;
+
+    if (phone_input) {
+        phone_input.setAttribute('minlength', '9');
+        phone_input.setAttribute('maxlength', '10');
+        phone_input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+            this.value = this.value.substring(0, 10);
         });
     }
 
-    // Handle form submission via AJAX
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
+    if (contactForm && submitBtn && btnTextSpan) {
+        contactForm.classList.remove('elementor-form');
+
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
 
-            // Validate phone
             if (phone_input && phone_input.value.length < 9) {
                 phone_input.focus();
-                alert('מספר טלפון חייב להכיל לפחות 9 ספרות');
-                return false;
+                showMessage('מספר טלפון חייב להכיל לפחות 9 ספרות', 'error');
+                return;
             }
 
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span><span class="elementor-button-text">שולח...</span></span>';
+            btnTextSpan.innerText = 'שולח...';
 
             try {
-                const formData = new FormData(contactForm);
-                const response = await fetch('/api/submit', {
+                const payload = {
+                    business_name: document.getElementById('form-field-fullname')?.value?.trim() || '',
+                    phone: phone_input?.value?.trim() || '',
+                    description: document.getElementById('form-field-issue_description')?.value?.trim() || ''
+                };
+
+                const response = await fetch(contactForm.action, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('הטופס נשלח בהצלחה! ניצור איתך קשר בקרוב.');
-                    contactForm.reset();
+                    showMessage(result.data?.message || 'נשלח בהצלחה', 'success');
                 } else {
-                    alert(result.message || 'אירעה שגיאה בשליחת הטופס. נסה שנית.');
+                    showMessage(result.data?.message || result.message || 'אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
                 }
             } catch (error) {
                 console.error('Form submission error:', error);
-                alert('אירעה שגיאה בשליחת הטופס. נסה שנית.');
+                showMessage('אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
+                btnTextSpan.innerText = 'שלח/י';
             }
         });
+    }
+
+    function showMessage(text, type) {
+        if (!contactForm) {
+            return;
+        }
+
+        const existingMessages = contactForm.querySelectorAll('.elementor-message-success, .elementor-message-danger');
+        existingMessages.forEach((msg) => msg.remove());
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = type === 'success'
+            ? 'elementor-message elementor-message-success'
+            : 'elementor-message elementor-message-danger';
+        messageDiv.setAttribute('role', 'alert');
+        messageDiv.textContent = text;
+        contactForm.appendChild(messageDiv);
+
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 5000);
     }
 });
 setTimeout(()=>{document.querySelector('div#wmn-fx').classList.add('whatsapp-visible');},5000)
