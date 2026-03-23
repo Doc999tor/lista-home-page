@@ -400,6 +400,19 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 					<label for="form-field-issue_description" class="elדementor-field-label elementor-screen-only">ספרו עליכם</label>
 					<textarea class="elementor-field-textual elementor-field elementor-size-md" name="form_fields[issue_description]" id="form-field-issue_description" rows="4" placeholder="ספרו עליכם"></textarea>
 				</div>
+				<div class="elementor-field-type-checkbox elementor-field-group elementor-column elementor-field-group-consent elementor-col-100">
+					<div class="trial-consent-wrap">
+						<div class="trial-consent-label">
+							<label for="form-field-consent">
+								<input size="1" type="checkbox" name="form_fields[consent]" id="form-field-consent" class="trial-consent-checkbox" value="1" required="required" aria-required="true">
+							</label>
+							<div class="trial-consent-text">
+								אני מסכימ/ה ל<a href="https://atzma.im/public/legal/privacy_policy.html" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות</a> ו<a href="https://atzma.im/public/legal/terms_of_use.html" target="_blank" rel="noopener noreferrer">תנאי השימוש</a>
+							</div>
+						</div>
+						<div id="consent-warning" class="trial-consent-warning" role="alert" aria-live="polite"></div>
+					</div>
+				</div>
 								<div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
 					<button type="submit" class="elementor-button elementor-size-md" id="submit-btn">
 						<span>
@@ -532,6 +545,52 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
     background-position: center;
     background-size: contain;
 }
+
+#trial-form .elementor-field-group-consent {
+    margin-top: 8px;
+}
+
+#trial-form .trial-consent-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #7e839f;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#trial-form .trial-consent-label label {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#trial-form .trial-consent-checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #7539da;
+    flex-shrink: 0;
+}
+
+#trial-form .trial-consent-text a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+#trial-form .trial-consent-warning {
+    display: none;
+    margin-top: 6px;
+    color: #dc3232;
+    font-size: 13px;
+    text-align: center;
+}
+
+#trial-form .trial-consent-warning.is-visible {
+    display: block;
+}
 </style>		</div>
 				</div>
 				<!-- <div class="elementor-element elementor-element-704ee2f elementor-widget elementor-widget-heading" data-id="704ee2f" data-element_type="widget" data-widget_type="heading.default">
@@ -662,7 +721,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 				<div class="elementor-element elementor-element-39ca24e elementor-widget elementor-widget-heading" data-id="39ca24e" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-			<h2 class="elementor-heading-title elementor-size-medium"><a href="/public/terms_of_use.html">תנאי שימוש</a></h2>		</div>
+			<h2 class="elementor-heading-title elementor-size-medium"><a href="https://atzma.im/public/legal/terms_of_use.html">תנאי שימוש</a></h2>		</div>
 				</div>
 				<div class="elementor-element elementor-element-e88d6e9 myDivider elementor-widget-divider--view-line elementor-widget elementor-widget-divider" data-id="e88d6e9" data-element_type="widget" data-widget_type="divider.default">
 				<div class="elementor-widget-container">
@@ -764,11 +823,10 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 			<script type="text/javascript">
 
 				/* OceanWP JS */
-				let phone_input
 window.addEventListener('load',()=>{
-	phone_input=document.getElementById("form-field-phone_num");
-	phone_input.value='0501234567';
-	document.getElementById('form-field-fullname').value='Test';
+	const phone_input = document.getElementById("form-field-phone_num");
+	// phone_input.value='0501234567';
+	// document.getElementById('form-field-fullname').value='Test';
 	if(phone_input){
 		phone_input.setAttribute('minlength','9');
 		phone_input.setAttribute('maxlength','10');
@@ -778,15 +836,43 @@ window.addEventListener('load',()=>{
 const contactForm = document.getElementById('contact-form');
 const submitBtn = document.getElementById('submit-btn');
 const btnTextSpan = submitBtn ? submitBtn.querySelector('.elementor-button-text') : null;
+const consentCheckbox = document.getElementById('form-field-consent');
+const consentWarning = document.getElementById('consent-warning');
 
 if (contactForm && submitBtn && btnTextSpan) {
     // Remove Elementor's form class to prevent its JavaScript from handling the form
     contactForm.classList.remove('elementor-form');
 
+    function setConsentWarning(message) {
+        if (!consentWarning) {
+            return;
+        }
+
+        if (message) {
+            consentWarning.textContent = message;
+            consentWarning.classList.add('is-visible');
+        } else {
+            consentWarning.textContent = '';
+            consentWarning.classList.remove('is-visible');
+        }
+    }
+
+    if (consentCheckbox) {
+        consentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                setConsentWarning('');
+            }
+        });
+    }
+
     contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
+
+        if (!contactForm.reportValidity()) {
+            return;
+        }
 
         // Validate phone
         if (phone_input && phone_input.value.length < 9) {
@@ -794,6 +880,14 @@ if (contactForm && submitBtn && btnTextSpan) {
             showMessage('מספר טלפון חייב להכיל לפחות 9 ספרות', 'error');
             return;
         }
+
+        if (consentCheckbox && !consentCheckbox.checked) {
+            setConsentWarning('יש לאשר את מדיניות הפרטיות ותנאי השימוש');
+            consentCheckbox.focus();
+            return;
+        }
+
+        setConsentWarning('');
 
         // Disable submit button and show loading
         submitBtn.disabled = true;
@@ -803,7 +897,8 @@ if (contactForm && submitBtn && btnTextSpan) {
             const payload = {
                 business_name: document.getElementById('form-field-fullname')?.value?.trim() || '',
                 phone: phone_input?.value?.trim() || '',
-                description: document.getElementById('form-field-issue_description')?.value?.trim() || ''
+                description: document.getElementById('form-field-issue_description')?.value?.trim() || '',
+                consent: Boolean(consentCheckbox?.checked)
             };
 
             const response = await fetch(contactForm.action, {
