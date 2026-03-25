@@ -189,8 +189,43 @@ async function fetchWithDetails(url, options, name) {
   }
 }
 
-function getSupportRequestFields(body) {
+function normalizeQueryParams(rawQuery) {
+  const queryParams = {};
+
+  for (const [key, value] of Object.entries(rawQuery || {})) {
+    if (Array.isArray(value)) {
+      const normalizedArray = value
+        .map((item) => String(item ?? "").trim())
+        .filter((item) => item !== "");
+
+      if (normalizedArray.length > 0) {
+        queryParams[key] = normalizedArray;
+      }
+      continue;
+    }
+
+    const normalizedValue = String(value ?? "").trim();
+    if (normalizedValue !== "") {
+      queryParams[key] = normalizedValue;
+    }
+  }
+
+  return queryParams;
+}
+
+function getSupportRequestFields(body, req) {
   const nestedFormFields = body?.form_fields || {};
+  const rawConsent = body?.consent ?? nestedFormFields.consent;
+  const normalizedConsent = String(rawConsent ?? "")
+    .trim()
+    .toLowerCase();
+  const consent =
+    rawConsent === true ||
+    rawConsent === 1 ||
+    normalizedConsent === "1" ||
+    normalizedConsent === "true" ||
+    normalizedConsent === "on" ||
+    normalizedConsent === "yes";
 
   return {
     business_name: String(
@@ -211,15 +246,25 @@ function getSupportRequestFields(body) {
         ""
     ).trim(),
     email: String(body?.email ?? nestedFormFields.email ?? "").trim(),
+    query_params: normalizeQueryParams(req?.query),
+    referrer_header: req?.get?.("referer") ? req.get("referrer") : undefined,
+    consent,
   };
 }
 
 function buildTemplateBody(templateBody, requestData) {
+  const consentTemplateValue = requestData.consent ? "1" : "";
+
   return templateBody
     .replace(/\{business_name\}/g, encodeURIComponent(requestData.business_name))
     .replace(/\{phone\}/g, encodeURIComponent(requestData.phone))
     .replace(/\{description\}/g, encodeURIComponent(requestData.description))
-    .replace(/\{email\}/g, encodeURIComponent(requestData.email));
+    .replace(/\{email\}/g, encodeURIComponent(requestData.email))
+    .replace(
+      /\{referrer_header\}/g,
+      encodeURIComponent(String(requestData?.query_params?.referrer_header ?? ""))
+    )
+    .replace(/\{consent\}/g, encodeURIComponent(consentTemplateValue));
 }
 
 app.get("/healthz-gn5bre", (_req, res) => {
@@ -227,7 +272,7 @@ app.get("/healthz-gn5bre", (_req, res) => {
 });
 
 app.post("/support", async (req, res) => {
-  const supportRequest = getSupportRequestFields(req.body);
+  const supportRequest = getSupportRequestFields(req.body, req);
   console.log({ supportRequest });
 
   if (!supportRequest.phone) {
@@ -308,7 +353,7 @@ app.post("/support", async (req, res) => {
 });
 
 app.post("/contact_us", async (req, res) => {
-  const contactUsRequest = getSupportRequestFields(req.body);
+  const contactUsRequest = getSupportRequestFields(req.body, req);
   console.log({ contactUsRequest });
 
   if (!contactUsRequest.phone) {
@@ -324,12 +369,18 @@ app.post("/contact_us", async (req, res) => {
     console.log(contactUsCrmBody);
 
     const [contactUsCrmResult, contactUsForwardResult] = await Promise.all([
-      fetchWithDetails(contactUsTemplate.url, {
+      // fetchWithDetails(contactUsTemplate.url, {
+      //   method: "POST",
+      //   headers: contactUsTemplate.headers,
+      //   body: contactUsCrmBody,
+      //   signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
+      // }, "contact_us_crm"),
+      fetchWithDetails(CONTACT_US_FORWARD_URL, {
         method: "POST",
-        headers: contactUsTemplate.headers,
-        body: contactUsCrmBody,
-        signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      }, "contact_us_crm"),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(contactUsRequest),
+        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
+      }, "contact_us_forward"),
       fetchWithDetails(CONTACT_US_FORWARD_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -374,9 +425,11 @@ app.post("/contact_us", async (req, res) => {
       },
       contact_us_crm: {
         status: contactUsCrmResponse.status,
+        body: contactUsCrmText,
       },
       contact_us_forward: {
         status: contactUsForwardResponse.status,
+        body: contactUsForwardText,
       },
     });
   } catch (error) {

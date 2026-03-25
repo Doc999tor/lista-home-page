@@ -381,8 +381,8 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 			</div>
 			<div class="elementor-element elementor-element-5c0b923 elementor-button-align-center elementor-widget elementor-widget-form" data-id="5c0b923" data-element_type="widget" id="trial-form" data-settings="{&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
-				<div class="elementor-widget-container">
-					<form class="" method="post" name="Contact Us Form" id="contact-form" action="/contact_us">
+	<div class="elementor-widget-container">
+		<form class="" method="post" name="Contact Us Form" id="contact-form" action="/contact_us">
 			<input type="hidden" name="post_id" value="1618">
 			<input type="hidden" name="form_id" value="5c0b923">
 			<input type="hidden" name="referer_title" value="הצטרפות והשארת פרטים">
@@ -424,7 +424,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 			</div>
 		</form>
-				</div>
+	</div>
 				</div>
 					</div>
 		</div>
@@ -820,6 +820,7 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 
 
 
+<script src="/public/assets/query-param-propagation.js"></script>
 			<script type="text/javascript">
 
 				/* OceanWP JS */
@@ -901,7 +902,12 @@ if (contactForm && submitBtn && btnTextSpan) {
                 consent: Boolean(consentCheckbox?.checked)
             };
 
-            const response = await fetch(contactForm.action, {
+            const contactUsUrl = window.mergeCurrentQueryParamsIntoUrl
+                ? window.mergeCurrentQueryParamsIntoUrl(contactForm.action)
+                : contactForm.action;
+						console.log({contactUsUrl})
+
+            const response = await fetch(contactUsUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
