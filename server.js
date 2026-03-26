@@ -369,18 +369,12 @@ app.post("/contact_us", async (req, res) => {
     console.log(contactUsCrmBody);
 
     const [contactUsCrmResult, contactUsForwardResult] = await Promise.all([
-      // fetchWithDetails(contactUsTemplate.url, {
-      //   method: "POST",
-      //   headers: contactUsTemplate.headers,
-      //   body: contactUsCrmBody,
-      //   signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
-      // }, "contact_us_crm"),
-      fetchWithDetails(CONTACT_US_FORWARD_URL, {
+      fetchWithDetails(contactUsTemplate.url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contactUsRequest),
-        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
-      }, "contact_us_forward"),
+        headers: contactUsTemplate.headers,
+        body: contactUsCrmBody,
+        signal: withTimeoutSignal(SUPPORT_CRM_TIMEOUT_MS),
+      }, "contact_us_crm"),
       fetchWithDetails(CONTACT_US_FORWARD_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

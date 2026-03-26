@@ -6,6 +6,15 @@
 	<title>תמיכה ללקוחות – Lista CRM</title>
 <meta name="robots" content="max-image-preview:large">
 <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="dns-prefetch" href="https://www.googletagmanager.com/">
+<meta property="og:title" content="תמיכה ללקוחות – Lista CRM">
+<meta property="og:description" content="עמוד התמיכה של Lista CRM. השאירו פרטים ונחזור אליכם בהקדם.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lista-crm.com/public/support.html">
+<meta property="og:site_name" content="Lista CRM">
+<meta property="og:locale" content="he_IL">
+<meta property="og:image" content="https://lista-crm.com/public/assets/favicon.ico">
+<meta property="og:image:type" content="image/x-icon">
+<meta property="og:image:alt" content="Lista CRM">
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -375,8 +384,8 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 					</div>
 				</div>
 				<div class="elementor-element elementor-element-5c0b923 elementor-button-align-center elementor-widget elementor-widget-form" data-id="5c0b923" data-element_type="widget" id="trial-form" data-settings="{&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
-				<div class="elementor-widget-container">
-					<form class="" method="post" name="Support Form" id="support-form" action="/support">
+	<div class="elementor-widget-container">
+		<form class="" method="post" name="Support Form" id="support-form" action="/support">
 			<input type="hidden" name="post_id" value="1618">
 			<input type="hidden" name="form_id" value="5c0b923">
 			<input type="hidden" name="referer_title" value="תמיכה ללקוחות קיימים">
@@ -390,7 +399,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 								</div>
 								<div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone_num elementor-col-100 elementor-field-required">
 									<label for="form-field-phone_num" class="elementor-field-label elementor-screen-only">מספר טלפון</label>
-									<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מספר טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20">
+									<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מספר טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20" style="text-align: end;">
 						</div>
 						<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-issue_description elementor-col-100 elementor-field-required">
 							<label for="form-field-issue_description" class="elementor-field-label elementor-screen-only">תיאור התקלה / הבקשה</label>
@@ -472,7 +481,8 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 /*Icon box settings*/
 #trial-form form.elementor-form .elementor-field-type-email::after,
 #trial-form .elementor-field-type-tel::after,
-#trial-form .elementor-field-type-text::after {
+#trial-form .elementor-field-type-text::after,
+#trial-form .elementor-field-type-textarea::after {
     position: absolute;
     left: 5px;
     top: 50%;
@@ -508,6 +518,20 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 
 #trial-form .elementor-field-type-tel::before{
     content: "\f095";
+}
+
+#trial-form .elementor-field-type-textarea::before{
+    position: absolute;
+    right: 22px;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    content: "";
+    z-index: 999;
+    background-image: url("/public/assets/edit-2.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 </style>		</div>
 				</div>
@@ -798,18 +822,21 @@ window.addEventListener('load', () => {
                 showMessage('אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'שלח/י';
+                btnTextSpan.innerText = 'שלח/י';
             }
         });
     }
 
     function showMessage(text, type) {
-        const existingMessages = supportForm
-            ? supportForm.querySelectorAll('.elementor-message-success, .elementor-message-danger')
+        const messageContainer = supportForm
+            ? supportForm.querySelector('.elementor-form-fields-wrapper') || supportForm
+            : null;
+        const existingMessages = messageContainer
+            ? messageContainer.querySelectorAll('.elementor-message-success, .elementor-message-danger')
             : [];
         existingMessages.forEach((msg) => msg.remove());
 
-        if (!supportForm) return;
+        if (!messageContainer) return;
 
         const messageDiv = document.createElement('div');
         messageDiv.className = type === 'success'
@@ -817,7 +844,9 @@ window.addEventListener('load', () => {
             : 'elementor-message elementor-message-danger';
         messageDiv.setAttribute('role', 'alert');
         messageDiv.textContent = text;
-        supportForm.appendChild(messageDiv);
+        messageDiv.style.display = 'block';
+        messageDiv.style.marginTop = '12px';
+        messageContainer.appendChild(messageDiv);
 
         setTimeout(() => {
             messageDiv.remove();
