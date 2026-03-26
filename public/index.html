@@ -730,7 +730,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				</div>
 				<div class="elementor-element elementor-element-0205c6e elementor-button-align-center elementor-hidden-desktop elementor-invisible elementor-widget elementor-widget-form" data-id="0205c6e" data-element_type="widget" id="trial-form" data-settings="{&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
 				<div class="elementor-widget-container">
-		<form class="" method="post" name="Contact Us Form" id="contact-form" action="http://localhost:3000/contact_us">
+		<form class="" method="post" name="Contact Us Form" id="contact-form" action="/contact_us">
 			<input type="hidden" name="post_id" value="15">
 			<input type="hidden" name="form_id" value="0205c6e">
 			<input type="hidden" name="referer_title" value="">
@@ -827,7 +827,6 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 }
 
 #trial-form .trial-consent-text a {
-    color: inherit;
     text-decoration: underline;
 }
 
@@ -1340,7 +1339,7 @@ window.addEventListener('load', () => {
                 if (result.success) {
                     showMessage(result.data?.message || 'נשלח בהצלחה', 'success');
                 } else {
-                    showMessage(result.data?.message || result.message || 'אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
+                    showMessage(result.data?.message || 'אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
                 }
             } catch (error) {
                 console.error('Form submission error:', error);

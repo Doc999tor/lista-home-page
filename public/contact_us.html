@@ -585,7 +585,6 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 }
 
 #trial-form .trial-consent-text a {
-    color: inherit;
     text-decoration: underline;
 }
 
@@ -879,10 +878,6 @@ if (contactForm && submitBtn && btnTextSpan) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-
-        if (!contactForm.reportValidity()) {
-            return;
-        }
 
         // Validate phone
         if (phone_input && phone_input.value.length < 9) {
