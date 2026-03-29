@@ -213,42 +213,14 @@ function normalizeQueryParams(rawQuery) {
   return queryParams;
 }
 
-function getSupportRequestFields(body, req) {
-  const nestedFormFields = body?.form_fields || {};
-  const rawConsent = body?.consent ?? nestedFormFields.consent;
-  const normalizedConsent = String(rawConsent ?? "")
-    .trim()
-    .toLowerCase();
-  const consent =
-    rawConsent === true ||
-    rawConsent === 1 ||
-    normalizedConsent === "1" ||
-    normalizedConsent === "true" ||
-    normalizedConsent === "on" ||
-    normalizedConsent === "yes";
-
+function getCommonRequestFields(body, req) {
   return {
-    business_name: String(
-      body?.business_name ??
-        body?.fullname ??
-        nestedFormFields.fullname ??
-        nestedFormFields.business_name ??
-        ""
-    ).trim(),
-    phone: String(
-      body?.phone ?? body?.phone_num ?? nestedFormFields.phone_num ?? nestedFormFields.phone ?? ""
-    ).trim(),
-    description: String(
-      body?.description ??
-        body?.issue_description ??
-        nestedFormFields.issue_description ??
-        nestedFormFields.description ??
-        ""
-    ).trim(),
-    email: String(body?.email ?? nestedFormFields.email ?? "").trim(),
+    business_name: String(body?.business_name ?? "").trim(),
+    phone: String(body?.phone ?? "").trim(),
+    description: String(body?.description ?? "").trim(),
+    email: String(body?.email ?? "").trim(),
     query_params: normalizeQueryParams(req?.query),
     referrer_header: req?.get?.("referer") ? req.get("referrer") : undefined,
-    consent,
   };
 }
 
@@ -272,7 +244,7 @@ app.get("/healthz-gn5bre", (_req, res) => {
 });
 
 app.post("/support", async (req, res) => {
-  const supportRequest = getSupportRequestFields(req.body, req);
+  const supportRequest = getCommonRequestFields(req.body, req);
   console.log({ supportRequest });
 
   if (!supportRequest.phone) {
@@ -353,7 +325,20 @@ app.post("/support", async (req, res) => {
 });
 
 app.post("/contact_us", async (req, res) => {
-  const contactUsRequest = getSupportRequestFields(req.body, req);
+  const rawConsent = req.body?.consent;
+  const normalizedConsent = String(rawConsent ?? "")
+    .trim()
+    .toLowerCase();
+  const consent =
+    rawConsent === true ||
+    rawConsent === 1 ||
+    normalizedConsent === "1" ||
+    normalizedConsent === "true" ||
+    normalizedConsent === "on" ||
+    normalizedConsent === "yes";
+
+  const contactUsRequest = getCommonRequestFields(req.body, req);
+  contactUsRequest.consent = consent;
   console.log({ contactUsRequest });
 
   if (!contactUsRequest.phone) {
