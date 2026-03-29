@@ -213,6 +213,15 @@ function normalizeQueryParams(rawQuery) {
   return queryParams;
 }
 
+function hasGoogleAdsQueryParams(queryParams) {
+  if (!queryParams || typeof queryParams !== "object") {
+    return false;
+  }
+
+  const googleAdsParamKeys = new Set(["gad_campaignid", "wbraid", "gclid", "gbraid", "dclid"]);
+  return Object.keys(queryParams).some((key) => googleAdsParamKeys.has(String(key).toLowerCase()));
+}
+
 function getCommonRequestFields(body, req) {
   return {
     business_name: String(body?.business_name ?? "").trim(),
@@ -226,6 +235,7 @@ function getCommonRequestFields(body, req) {
 
 function buildTemplateBody(templateBody, requestData) {
   const consentTemplateValue = requestData.consent ? "1" : "";
+  const sourceTemplateValue = String(requestData?.source ?? "");
 
   return templateBody
     .replace(/\{business_name\}/g, encodeURIComponent(requestData.business_name))
@@ -236,6 +246,7 @@ function buildTemplateBody(templateBody, requestData) {
       /\{referrer_header\}/g,
       encodeURIComponent(String(requestData?.query_params?.referrer_header ?? ""))
     )
+    .replace(/\{source\}/g, encodeURIComponent(sourceTemplateValue))
     .replace(/\{consent\}/g, encodeURIComponent(consentTemplateValue));
 }
 
@@ -339,6 +350,7 @@ app.post("/contact_us", async (req, res) => {
 
   const contactUsRequest = getCommonRequestFields(req.body, req);
   contactUsRequest.consent = consent;
+  contactUsRequest.source = hasGoogleAdsQueryParams(contactUsRequest.query_params) ? "18" : "11";
   console.log({ contactUsRequest });
 
   if (!contactUsRequest.phone) {
