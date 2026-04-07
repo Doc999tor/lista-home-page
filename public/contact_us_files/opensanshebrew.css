@@ -1,5 +1,5 @@
 /*
- * Open Sans Hebrew (Hebrew) http://www.google.com/fonts/earlyaccess
+ * Open Sans Hebrew (Hebrew) http://www.google.com/public/fonts/earlyaccess
  */
 @font-face {
   font-family: 'Open Sans Hebrew';
@@ -37,7 +37,7 @@
   font-weight: 400;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot?#iefix) format('embedded-opentype'),
-       url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff2) format('woff2'),
+       url(/public/fonts/OpenSansHebrew-Regular.woff2) format('woff2'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff) format('woff'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.ttf) format('truetype');
 }

@@ -1,0 +1,6 @@
+# Local configuration with credentials
+config.local.php
+
+# Log files
+*.log
+submissions.log

@@ -43,6 +43,23 @@
                 "uriFormat": "http://localhost:%s",
                 "action": "openExternally"
             }
+        },
+        {
+            "name": "Run Contact Node Server",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": [
+                "--watch"
+            ],
+            "program": "${workspaceFolder}/server.js",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PORT": "3000"
+            },
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }

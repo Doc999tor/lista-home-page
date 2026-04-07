@@ -1,0 +1,10 @@
+curl 'https://app.fireberry.com/web/webtocase.aspx' \
+  -X POST \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:148.0) Gecko/20100101 Firefox/148.0' \
+  -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Origin: https://lista-crm.com' \
+  -H 'Connection: keep-alive' \
+  -H 'Cookie: AWSALB=V68r3akD5UXqG15ggTGuDmgVpckNklVEuWSnLIVDmmKqEpSrRk3dH73JdRI9ZEiO/J/Y+YLDL7eM9OOhuZbsIG5VETzYoKpKSDHBVfUnpQbPEYIaJgbOreMjNBPJ; AWSALBCORS=V68r3akD5UXqG15ggTGuDmgVpckNklVEuWSnLIVDmmKqEpSrRk3dH73JdRI9ZEiO/J/Y+YLDL7eM9OOhuZbsIG5VETzYoKpKSDHBVfUnpQbPEYIaJgbOreMjNBPJ; AWSALBTG=Kd0l/6r3uIVQ1BQWArAuJaWw1IAaJrf6yxRsJRfLLsIfNBEcRnn6A+9XaezyMBwcRM1RnANRhZlYmzOvQJuSeQhqYMTSUffkEV03UpqeYc2SlHZoUKsjwcvE9Jq4zANZXlrEIzoTZqG5HOWofiP6/PhFwQ9VaCD2EMhcpd30kfo7; AWSALBTGCORS=Kd0l/6r3uIVQ1BQWArAuJaWw1IAaJrf6yxRsJRfLLsIfNBEcRnn6A+9XaezyMBwcRM1RnANRhZlYmzOvQJuSeQhqYMTSUffkEV03UpqeYc2SlHZoUKsjwcvE9Jq4zANZXlrEIzoTZqG5HOWofiP6/PhFwQ9VaCD2EMhcpd30kfo7' \
+  -H 'Upgrade-Insecure-Requests: 1' \
+  --data-raw 'returnpath=&uid=6D90F704-90AE-4BA4-B8C5-45A8542007EE&pcfsystemfield47={business_name}&caseageindays=&urgency=1&pcfsystemfield49={phone}&intent=&casesnumber=&statecode=1&casesourcecode=2&title=קריאה {business_name}&statuscode=2&sentiment=3&prioritycode=1&pcfsystemfield54={description}&pcfsystemfield45=1&pcfsystemfield41=3&pcfsystemfield43=3&language=&suggestedreply=&casetypecode=13&description={description}'

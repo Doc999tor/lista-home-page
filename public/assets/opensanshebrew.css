@@ -1,10 +1,11 @@
 /*
- * Open Sans Hebrew (Hebrew) http://www.google.com/fonts/earlyaccess
+ * Open Sans Hebrew (Hebrew) http://www.google.com/public/fonts/earlyaccess
  */
 @font-face {
   font-family: 'Open Sans Hebrew';
   font-style: italic;
   font-weight: 300;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.woff2) format('woff2'),
@@ -15,6 +16,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: normal;
   font-weight: 300;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.woff2) format('woff2'),
@@ -25,6 +27,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: italic;
   font-weight: 400;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.woff2) format('woff2'),
@@ -35,9 +38,10 @@
   font-family: 'Open Sans Hebrew';
   font-style: normal;
   font-weight: 400;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot?#iefix) format('embedded-opentype'),
-       url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff2) format('woff2'),
+       url(/public/fonts/OpenSansHebrew-Regular.woff2) format('woff2'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff) format('woff'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.ttf) format('truetype');
 }
@@ -45,6 +49,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: italic;
   font-weight: 700;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.woff2) format('woff2'),
@@ -55,6 +60,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: normal;
   font-weight: 700;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.woff2) format('woff2'),
@@ -65,6 +71,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: italic;
   font-weight: 800;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.woff2) format('woff2'),
@@ -75,6 +82,7 @@
   font-family: 'Open Sans Hebrew';
   font-style: normal;
   font-weight: 800;
+  font-display: swap;
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot);
   src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot?#iefix) format('embedded-opentype'),
        url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.woff2) format('woff2'),

@@ -1,0 +1,23 @@
+[Unit]
+Description=Lista Home Page Node.js backend
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/wp.lista-app.com
+Environment=NODE_ENV=production
+Environment=PORT=8083
+EnvironmentFile=-/etc/lista-home-page.env
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/wp.lista-app.com
+
+[Install]
+WantedBy=multi-user.target
