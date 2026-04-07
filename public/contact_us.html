@@ -613,7 +613,7 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				<div class="elementor-widget-container">
 					<ul class="elementor-icon-list-items">
 							<li class="elementor-icon-list-item">
-											<a href="https://wa.me/message/FXUB3TGWMW6EC1">
+											<a href="https://wa.me/+972556699540?text=%D7%94%D7%99,%20%D7%90%D7%A4%D7%A9%D7%A8%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A2%D7%95%D7%93%20%D7%9E%D7%99%D7%93%D7%A2%20%D7%A2%D7%9C%20%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%AA%20LISTA?">
 
 												<span class="elementor-icon-list-icon">
 							<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><defs><lineargradient id="z4656xogta" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#61fd7d"></stop><stop offset="1" stop-color="#25cf43"></stop></lineargradient></defs><g><circle cx="22" cy="22" r="22" fill="url(#z4656xogta)"></circle><path fill="#fff" d="M1.856 19.621a13.081 13.081 0 1 1 11.335 6.552h-.005a13.071 13.071 0 0 1-6.251-1.592L0 26.4zm5.8 2.827a10.855 10.855 0 0 0 5.534 1.516 10.874 10.874 0 1 0-9.211-5.1l.258.411-1.1 4.012 4.115-1.079zm7.673-3.267a18.813 18.813 0 0 1-1.863-.689 14.571 14.571 0 0 1-5.584-4.936 6.359 6.359 0 0 1-1.335-3.381 3.666 3.666 0 0 1 1.141-2.726 1.2 1.2 0 0 1 .872-.409c.218 0 .436 0 .626.011h.074c.19 0 .428 0 .662.56.272.654.926 2.263 1.008 2.427a.6.6 0 0 1 .027.573 2.229 2.229 0 0 1-.327.545c-.163.191-.343.426-.49.573-.164.163-.334.34-.143.667a9.852 9.852 0 0 0 1.818 2.264 8.928 8.928 0 0 0 2.629 1.622c.327.164.517.136.708-.082s.817-.954 1.035-1.282.436-.273.735-.164 1.907.9 2.233 1.064.545.245.626.382a2.733 2.733 0 0 1-.191 1.554 3.366 3.366 0 0 1-2.206 1.554 5.346 5.346 0 0 1-.793.063 4.149 4.149 0 0 1-1.265-.19z" transform="translate(8.796 8.105)"></path></g></svg>						</span>
@@ -959,6 +959,25 @@ function showMessage(text, type) {
 }
 
 })
+
+// WhatsApp button click tracking
+document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const buttonType = this.closest('.my-share-btn') ? 'main_button' : 'sticky_button';
+        const whatsappClickUrl = window.mergeCurrentQueryParamsIntoUrl
+            ? window.mergeCurrentQueryParamsIntoUrl('/whatsapp-click')
+            : '/whatsapp-click';
+        fetch(whatsappClickUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ button_type: buttonType })
+        }).then(() => {
+            window.open(this.href, '_blank');
+        });
+    });
+});
+
 setTimeout(()=>{document.querySelector('div#wmn-fx').classList.add('whatsapp-visible');},5000)
 			</script>
 

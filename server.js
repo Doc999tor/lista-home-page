@@ -229,7 +229,7 @@ function getCommonRequestFields(body, req) {
     description: String(body?.description ?? "").trim(),
     email: String(body?.email ?? "").trim(),
     query_params: normalizeQueryParams(req?.query),
-    referrer_header: req?.get?.("referer") ? req.get("referrer") : undefined,
+    referrer_header: req.get("referrer"),
   };
 }
 
@@ -433,6 +433,53 @@ app.post("/contact_us", async (req, res) => {
       message: "Unexpected error while forwarding submission",
       error: error?.message || "unknown_error",
       cause: error?.cause?.message || null,
+    });
+  }
+});
+
+app.post("/whatsapp-click", async (req, res) => {
+  const forwardPayload = {
+    ...normalizeQueryParams(req.query),
+    ...req.body,
+  };
+
+  try {
+    const forwardResult = await fetchWithDetails(
+      CONTACT_US_FORWARD_URL,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(forwardPayload),
+        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
+      },
+      "whatsapp_click_forward",
+    );
+
+    if (!forwardResult.ok) {
+      return res.status(500).json({
+        success: false,
+        message: "Unexpected error while forwarding WhatsApp click",
+        contact_us_forward_error: forwardResult.error,
+      });
+    }
+
+    if (!forwardResult.response.ok) {
+      return res.status(502).json({
+        success: false,
+        message: "Failed to forward WhatsApp click",
+        contact_us_forward: {
+          status: forwardResult.response.status,
+          body: forwardResult.bodyText,
+        },
+      });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unexpected error while forwarding WhatsApp click",
+      error: error.message,
     });
   }
 });

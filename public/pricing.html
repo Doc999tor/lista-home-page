@@ -1290,6 +1290,25 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 window.addEventListener('load',()=>{phone_input=document.getElementById("form-field-phone_num");if(phone_input){phone_input.setAttribute('minlength','9');phone_input.setAttribute('maxlength','10');phone_input.closest('form').querySelector('button[type="submit"]').onclick=()=>{if(phone_input.value.length<9){phone_input.focus()
 return false;}else{return true;}}
 phone_input.addEventListener('input',function(){this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*?)\..*/g,'$1');this.value=this.value.substring(0,10);})}})
+
+// WhatsApp button click tracking
+document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const buttonType = this.closest('.my-share-btn') ? 'main_button' : 'sticky_button';
+        const whatsappClickUrl = window.mergeCurrentQueryParamsIntoUrl
+            ? window.mergeCurrentQueryParamsIntoUrl('/whatsapp-click')
+            : '/whatsapp-click';
+        fetch(whatsappClickUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ button_type: buttonType })
+        }).then(() => {
+            window.open(this.href, '_blank');
+        });
+    });
+});
+
 setTimeout(()=>{document.querySelector('div#wmn-fx').classList.add('whatsapp-visible');},5000)
 			</script>
 
