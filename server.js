@@ -22,8 +22,6 @@ const ENABLE_TEMP_CORS = process.env.ENABLE_TEMP_CORS !== "false";
 const TEMP_CORS_ORIGIN = process.env.TEMP_CORS_ORIGIN || "*";
 const REQUEST_LOGGING_ENABLED = process.env.REQUEST_LOGGING_ENABLED !== "false";
 const REQUEST_LOG_EXCLUDE_HEALTHCHECKS = process.env.REQUEST_LOG_EXCLUDE_HEALTHCHECKS !== "false";
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
 
 const app = express();
 
@@ -166,54 +164,6 @@ function withTimeoutSignal(timeoutMs) {
   return AbortSignal.timeout(timeoutMs);
 }
 
-function escapeTelegramMarkdown(text) {
-  const chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-  let escaped = String(text);
-  for (const char of chars) {
-    escaped = escaped.replaceAll(char, '\\' + char);
-  }
-  return escaped;
-}
-
-async function sendTelegramMessage(message) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.log('telegram_skipped', { reason: 'credentials_not_configured' });
-    return { success: false, message: 'Telegram credentials not configured' };
-  }
-
-  try {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'Markdown'
-      }),
-      signal: AbortSignal.timeout(10000)
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error('telegram_send_error', {
-        status: response.status,
-        body: text
-      });
-      return { success: false, message: 'Failed to send message to Telegram' };
-    }
-
-    const data = await response.json();
-    return { success: true, data };
-  } catch (error) {
-    console.error('telegram_fetch_error', {
-      message: error?.message,
-      cause: error?.cause?.message || null
-    });
-    return { success: false, message: error?.message || 'Unknown error' };
-  }
-}
-
 async function fetchWithDetails(url, options, name) {
   try {
     const response = await fetch(url, options);
@@ -279,24 +229,8 @@ function getCommonRequestFields(body, req) {
     description: String(body?.description ?? "").trim(),
     email: String(body?.email ?? "").trim(),
     query_params: normalizeQueryParams(req?.query),
-    referrer: req.get("referer") || undefined,
+    referrer_header: req.get("referrer"),
   };
-}
-
-function buildTelegramNotification(type, data) {
-  const timestamp = new Date().toLocaleString();
-  const referrer = escapeTelegramMarkdown(decodeURIComponent(data.referrer || 'unknown'));
-  
-  switch(type) {
-    case 'support':
-      return `📞 *Support Request*\n\n👤 *Phone:* ${escapeTelegramMarkdown(decodeURIComponent(data.phone))}\n🏢 *Business:* ${escapeTelegramMarkdown(decodeURIComponent(data.business_name || 'N/A'))}\n📧 *Email:* ${escapeTelegramMarkdown(decodeURIComponent(data.email || 'N/A'))}\n📝 *Description:* ${escapeTelegramMarkdown(decodeURIComponent(data.description || 'N/A'))}\n🌐 *Referrer:* ${referrer}\n🕐 *Time:* ${timestamp}\n`;
-    case 'contact_us':
-      return `📋 *Contact Form Submission*\n\n👤 *Phone:* ${escapeTelegramMarkdown(decodeURIComponent(data.phone))}\n🏢 *Business:* ${escapeTelegramMarkdown(decodeURIComponent(data.business_name || 'N/A'))}\n📧 *Email:* ${escapeTelegramMarkdown(decodeURIComponent(data.email || 'N/A'))}\n📝 *Description:* ${escapeTelegramMarkdown(decodeURIComponent(data.description || 'N/A'))}\n✅ *Consent:* ${data.consent ? 'Yes' : 'No'}\n🌐 *Referrer:* ${referrer}\n🕐 *Time:* ${timestamp}\n`;
-    case 'whatsapp_click':
-      return `📱 *WhatsApp Button Click*\n\n🔘 *Button Type:* ${escapeTelegramMarkdown(decodeURIComponent(data.buttonType))}\n🌐 *Referrer:* ${referrer}\n🕐 *Time:* ${timestamp}\n`;
-    default:
-      return '';
-  }
 }
 
 function buildTemplateBody(templateBody, requestData) {
@@ -330,10 +264,6 @@ app.post("/support", async (req, res) => {
       message: "Phone is required",
     });
   }
-
-  // Send Telegram notification
-  const telegramMessage = buildTelegramNotification('support', supportRequest);
-  const telegramResult = await sendTelegramMessage(telegramMessage);
 
   try {
     const supportTemplate = await getParsedSupportCurlTemplate();
@@ -388,7 +318,6 @@ app.post("/support", async (req, res) => {
       success: true,
       data: {
         message: "נשלח בהצלחה",
-        telegram: telegramResult.success ? 'sent' : 'failed'
       },
       support_crm: {
         status: supportCrmResponse.status,
@@ -430,10 +359,6 @@ app.post("/contact_us", async (req, res) => {
       message: "Phone is required",
     });
   }
-
-  // Send Telegram notification
-  const telegramMessage = buildTelegramNotification('contact_us', contactUsRequest);
-  const telegramResult = await sendTelegramMessage(telegramMessage);
 
   try {
     const contactUsTemplate = await getParsedContactUsCurlTemplate();
@@ -488,7 +413,6 @@ app.post("/contact_us", async (req, res) => {
       success: true,
       data: {
         message: "נשלח בהצלחה",
-        telegram: telegramResult.success ? 'sent' : 'failed'
       },
       contact_us_crm: {
         status: contactUsCrmResponse.status,
@@ -513,28 +437,51 @@ app.post("/contact_us", async (req, res) => {
   }
 });
 
-// WhatsApp button click tracking
 app.post("/whatsapp-click", async (req, res) => {
-  const buttonType = String(req.body?.button_type ?? 'unknown').trim();
-  const referrer = req.get('referer') || 'unknown';
+  const forwardPayload = {
+    ...normalizeQueryParams(req.query),
+    ...req.body,
+  };
 
-  // Send Telegram notification
-  const telegramMessage = buildTelegramNotification('whatsapp_click', { buttonType, referrer });
-  const telegramResult = await sendTelegramMessage(telegramMessage);
+  try {
+    const forwardResult = await fetchWithDetails(
+      CONTACT_US_FORWARD_URL,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(forwardPayload),
+        signal: withTimeoutSignal(SUPPORT_FORWARD_TIMEOUT_MS),
+      },
+      "whatsapp_click_forward",
+    );
 
-  // Log the click
-  console.log('whatsapp_click', {
-    button_type: buttonType,
-    referrer,
-    ip: req.ip,
-    user_agent: req.get('user-agent') || 'unknown',
-    timestamp: new Date().toISOString()
-  });
+    if (!forwardResult.ok) {
+      return res.status(500).json({
+        success: false,
+        message: "Unexpected error while forwarding WhatsApp click",
+        contact_us_forward_error: forwardResult.error,
+      });
+    }
 
-  return res.json({
-    success: telegramResult.success,
-    message: telegramResult.success ? 'Tracked' : 'Failed to track'
-  });
+    if (!forwardResult.response.ok) {
+      return res.status(502).json({
+        success: false,
+        message: "Failed to forward WhatsApp click",
+        contact_us_forward: {
+          status: forwardResult.response.status,
+          body: forwardResult.bodyText,
+        },
+      });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unexpected error while forwarding WhatsApp click",
+      error: error.message,
+    });
+  }
 });
 
 app.listen(PORT, "0.0.0.0", () => {

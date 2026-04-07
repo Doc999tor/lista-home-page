@@ -13,8 +13,8 @@
 <meta property="og:url" content="https://lista-crm.com/">
 <meta property="og:site_name" content="Lista CRM">
 <meta property="og:locale" content="he_IL">
-<meta property="og:image" content="https://lista-crm.com/public/assets/favicon.ico">
-<meta property="og:image:type" content="image/x-icon">
+<meta property="og:image" content="https://lista-crm.com/public/assets/pic1.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="Lista CRM">
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
@@ -1442,10 +1442,13 @@ document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
         const buttonType = this.closest('.my-share-btn') ? 'main_button' : 'sticky_button';
-        fetch('/whatsapp-click', {
+        const whatsappClickUrl = window.mergeCurrentQueryParamsIntoUrl
+            ? window.mergeCurrentQueryParamsIntoUrl('/whatsapp-click')
+            : '/whatsapp-click';
+        fetch(whatsappClickUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ button_type: buttonType })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ button_type: buttonType })
         }).then(() => {
             window.open(this.href, '_blank');
         });
