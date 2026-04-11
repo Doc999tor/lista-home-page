@@ -6,7 +6,8 @@
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "generate:seo": "node scripts/generate-seo-pillar-pages.mjs"
   },
   "engines": {
     "node": ">=18.0.0"
