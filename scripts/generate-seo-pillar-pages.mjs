@@ -39,7 +39,7 @@ const pillars = [
 <h2>אחרי שסגרו — מה הלאה?</h2>
 <p>אישור ללקוח, עדכון אוטומטי אצלכם ביומן, ואז אפשר להמשיך לתזכורת (למשל SMS יום לפני). פחות מצבים של ״שכחנו שיש תור״.</p>
 
-<div class="note">איך בדיוק זה נראה אצלכם תלוי בהגדרות ובמסלול — שווה לעבור על זה עם הנציג: ביטולים, מקדמה, מדיניות — כדי שלא תופתעו אחרי שכבר פרסמתם את הקישור.</div>
+<aside class="note"><strong>הערה:</strong> איך בדיוק זה נראה אצלכם תלוי בהגדרות ובמסלול — שווה לעבור על זה עם הנציג: ביטולים, מקדמה, מדיניות — כדי שלא תופתעו אחרי שכבר פרסמתם את הקישור.</aside>
 
 <h2>הצד שלכם: ניהול היומן</h2>
 <p>מחפשים תצוגת יום / שבוע / חודש ועבודה מהנייד כבעלי העסק? זה נכנס יותר ל<a href="/public/seo/calendar-management.html">ניהול יומן ותצוגות</a>.</p>
@@ -67,7 +67,7 @@ const pillars = [
 <h2>תור לעומת קמפיין שיווקי</h2>
 <p>כאן אנחנו מדברים בעיקר על הודעות שנוגעות ל<strong>תור או לשינוי פגישה</strong>. מבצעים לרשימת תפוצה, דברים המוניים, הסרות — זה עולם אחר מבחינת חוק, הסכמות וספק SMS. תבדקו את זה בנפרד עם יועץ או עם הספק, אל תסמכו רק על ״זה יצא מהמערכת״.</p>
 
-<div class="note">ניסוחים, תזמון ומה בכלל אפשר לשלוח — תלוי במה שמוגדר אצלכם ובחבילה אצל ספק ה-SMS. אם משהו נראה ״לא עובד״, לפעמים זה לא באג אלא הגדרה.</div>
+<aside class="note"><strong>הערה:</strong> ניסוחים, תזמון ומה בכלל אפשר לשלוח — תלוי במה שמוגדר אצלכם ובחבילה אצל ספק ה-SMS. אם משהו נראה ״לא עובד״, לפעמים זה לא באג אלא הגדרה.</aside>
 
 <p>ועוד שני דברים שעוזרים: <a href="/public/seo/online-booking.html">זימון נוח</a> בלי להסתובב על הטלפון, ו<a href="/public/seo/client-crm.html">כרטיס לקוח</a> עם טלפון מעודכן — אחרת התזכורת נוחתת לאן שלא צריך.</p>
 `,
@@ -136,7 +136,7 @@ const pillars = [
 
 <h2>צמצום הברזות ובעיות בתורים</h2>
 <p>יש עסקים שרוצים <strong>להגביל קביעה עצמאית</strong> כשאותו אדם חוזר על אי־הגעה או מפריע לתהליך. אפשר לנהל את זה דרך המערכת — לפי מה שהגדרתם ולפי המדיניות שלכם.</p>
-<div class="note">השימוש בחסימות או בהגבלות צריך להיות הוגן, שקוף ללקוח כנדרש, ותואם את תנאי השימוש והחוק.</div>
+<aside class="note"><strong>הערה:</strong> השימוש בחסימות או בהגבלות צריך להיות הוגן, שקוף ללקוח כנדרש, ותואם את תנאי השימוש והחוק.</aside>
 
 <h2>שיווק ותזכורות</h2>
 <p>מועדון לקוחות יכול לחבר ל<a href="/public/seo/sms-reminders.html">הודעות סביב תורים</a> ול<a href="/public/seo/facebook-leads.html">השלמת פרטים בקישור</a> — כדי שהרשימה שלכם תהיה עדכנית וברת-פעולה.</p>
@@ -165,7 +165,7 @@ const pillars = [
 <h2>המשך מומלץ בזרימת העבודה</h2>
 <p>אחרי שהפרטים נכנסים ל<a href="/public/seo/client-crm.html">כרטיס לקוח</a>, הטבעי הוא לאפשר <a href="/public/seo/online-booking.html">קביעת תור</a> ולשלוח <a href="/public/seo/sms-reminders.html">תזכורות SMS</a> סביב הפגישה.</p>
 
-<div class="note">Lista CRM היא מוצר נפרד ממטא (Facebook) ואינה מייצגת את החברה. אין כאן אישור או שותפות רשמית.</div>
+<aside class="note"><strong>הערה:</strong> Lista CRM היא מוצר נפרד ממטא (Facebook) ואינה מייצגת את החברה. אין כאן אישור או שותפות רשמית.</aside>
 `,
   },
   {
@@ -287,23 +287,23 @@ ${jsonLd}
   <a class="skip-link" href="#main">דילוג לתוכן</a>
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="brand" href="/">
-        <img class="brand__logo" src="/public/assets/lista-crm-wordmark.svg" width="117" height="24" alt="Lista CRM" decoding="async" />
+      <a class="brand" href="/" aria-label="Lista CRM — דף הבית">
+        <img class="brand__logo" src="/public/assets/lista-crm-wordmark.svg" width="117" height="24" alt="" decoding="async" />
       </a>
       ${buildNav(page.slug)}
     </div>
   </header>
-  <div class="hero">
-    <div class="hero__inner">
-      <h1>${page.h1}</h1>
-      <p class="lead">${page.lead}</p>
-      <div class="cta-row">
-        <a class="btn btn--primary" href="/public/contact_us.html">שבועיים ניסיון — דברו איתנו</a>
-        <a class="btn btn--ghost" href="/public/pricing.html">מחירון</a>
+  <main id="main" tabindex="-1">
+    <div class="hero">
+      <div class="hero__inner">
+        <h1>${page.h1}</h1>
+        <p class="lead">${page.lead}</p>
+        <div class="cta-row">
+          <a class="btn btn--primary" href="/public/contact_us.html">שבועיים ניסיון — דברו איתנו</a>
+          <a class="btn btn--ghost" href="/public/pricing.html">מחירון</a>
+        </div>
       </div>
     </div>
-  </div>
-  <main id="main">
     <article>
       ${page.body.trim()}
     </article>

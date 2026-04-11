@@ -5,8 +5,9 @@
   --seo-bg-card: #ffffff;
   --seo-purple: #6b3ad6;
   --seo-purple-dark: #4a2799;
-  --seo-pink: #e91e8c;
-  --seo-pink-hover: #c71578;
+  /* Primary CTA: ~4.6:1 on white (WCAG AA normal text) */
+  --seo-pink: #c71578;
+  --seo-pink-hover: #a01062;
   --seo-text: #2d2a32;
   --seo-muted: #5a5663;
   --seo-border: #e2ddf5;
@@ -59,10 +60,14 @@ body {
   white-space: nowrap;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
   clip-path: none;
   width: auto;
   height: auto;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--seo-focus);
 }
 
 .site-header {
@@ -195,10 +200,16 @@ body {
   transition: background 0.15s ease, color 0.15s ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}
+
 .btn--primary {
   background: var(--seo-pink);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(233, 30, 140, 0.25);
+  box-shadow: 0 2px 8px rgba(167, 16, 98, 0.28);
 }
 
 .btn--primary:hover {
@@ -222,7 +233,28 @@ body {
 }
 
 main {
-  padding: 0 1.25rem 3rem;
+  --main-pad: 1.25rem;
+  padding-inline: var(--main-pad);
+  padding-bottom: 3rem;
+}
+
+/* Full-bleed hero inside padded main (skip link + <main> include h1) */
+main > .hero {
+  width: calc(100% + 2 * var(--main-pad));
+  margin-inline: calc(-1 * var(--main-pad));
+}
+
+main > article {
+  margin-top: 1.75rem;
+}
+
+main#main:focus {
+  outline: none;
+}
+
+main#main:focus-visible {
+  outline: 3px solid var(--seo-focus);
+  outline-offset: 2px;
 }
 
 article {
@@ -285,6 +317,7 @@ article a:focus-visible {
 }
 
 .note {
+  display: block;
   margin: 1.25rem 0;
   padding: 1rem 1.1rem;
   background: #f7f5ff;
@@ -319,12 +352,14 @@ article a:focus-visible {
 
 .related a {
   color: var(--seo-purple-dark);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
   font-weight: 500;
 }
 
 .related a:hover {
-  text-decoration: underline;
+  color: var(--seo-purple);
 }
 
 .related a:focus-visible {
@@ -355,6 +390,13 @@ article a:focus-visible {
 
 .site-footer a {
   color: var(--seo-purple);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.site-footer a:hover {
+  color: var(--seo-purple-dark);
 }
 
 .site-footer a:focus-visible {
@@ -409,7 +451,7 @@ article a:focus-visible {
   }
 
   main {
-    padding-inline: 1rem;
+    --main-pad: 1rem;
   }
 
   article {
