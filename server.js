@@ -441,6 +441,7 @@ app.post("/whatsapp-click", async (req, res) => {
   const forwardPayload = {
     ...normalizeQueryParams(req.query),
     ...req.body,
+    referrer_header: req.get("referrer"),
   };
 
   try {
