@@ -10,8 +10,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "public", "seo");
 
-const BASE = "https://lista-crm.com";
-const OG_IMAGE = `${BASE}/public/assets/pic1.jpg`;
+/** Root-relative paths only; no hardcoded origin (works on staging and production). */
+const OG_IMAGE = "/public/assets/pic1.jpg";
 
 const pillars = [
   {
@@ -228,31 +228,31 @@ function buildRelated(currentSlug) {
 }
 
 function buildJsonLd(page) {
-  const url = `${BASE}/public/seo/${page.file}`;
+  const pagePath = `/public/seo/${page.file}`;
   const graph = [
     {
       "@type": "Organization",
-      "@id": `${BASE}/#organization`,
+      "@id": "/#organization",
       name: "Lista CRM",
-      url: `${BASE}/`,
-      logo: `${BASE}/public/assets/favicon.ico`,
+      url: "/",
+      logo: "/public/assets/favicon.ico",
     },
     {
       "@type": "WebSite",
-      "@id": `${BASE}/#website`,
+      "@id": "/#website",
       name: "Lista CRM",
-      url: `${BASE}/`,
-      publisher: { "@id": `${BASE}/#organization` },
+      url: "/",
+      publisher: { "@id": "/#organization" },
       inLanguage: "he-IL",
     },
     {
       "@type": "WebPage",
-      "@id": `${url}#webpage`,
-      url,
+      "@id": `${pagePath}#webpage`,
+      url: pagePath,
       name: page.title,
       description: page.description,
       inLanguage: "he-IL",
-      isPartOf: { "@id": `${BASE}/#website` },
+      isPartOf: { "@id": "/#website" },
     },
   ];
   return JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
@@ -267,11 +267,11 @@ function buildPage(page) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escHtml(page.title)}</title>
   <meta name="description" content="${escHtml(page.description)}">
-  <link rel="canonical" href="${BASE}/public/seo/${page.file}">
+  <link rel="canonical" href="/public/seo/${page.file}">
   <meta property="og:title" content="${escHtml(page.title)}">
   <meta property="og:description" content="${escHtml(page.description)}">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${BASE}/public/seo/${page.file}">
+  <meta property="og:url" content="/public/seo/${page.file}">
   <meta property="og:site_name" content="Lista CRM">
   <meta property="og:locale" content="he_IL">
   <meta property="og:image" content="${OG_IMAGE}">
@@ -287,7 +287,7 @@ ${jsonLd}
   <a class="skip-link" href="#main">דילוג לתוכן</a>
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="brand" href="https://lista-crm.com/">
+      <a class="brand" href="/">
         <img class="brand__logo" src="/public/assets/lista-crm-wordmark.svg" width="117" height="24" alt="Lista CRM" decoding="async" />
       </a>
       ${buildNav(page.slug)}
@@ -310,7 +310,7 @@ ${jsonLd}
     ${buildRelated(page.slug)}
   </main>
   <footer class="site-footer">
-    <p>© Lista Smart Manager · <a href="https://lista-crm.com/">האתר הראשי</a> · <a href="/public/pricing.html">מחירון</a> · <a href="/public/contact_us.html">צור קשר</a></p>
+    <p>© Lista Smart Manager · <a href="/">האתר הראשי</a> · <a href="/public/pricing.html">מחירון</a> · <a href="/public/contact_us.html">צור קשר</a></p>
     <p><a href="https://atzma.im/public/legal/privacy_policy.html" rel="noopener noreferrer">מדיניות פרטיות</a> · <a href="https://atzma.im/public/legal/terms_of_use.html" rel="noopener noreferrer">תנאי שימוש</a></p>
   </footer>
   <script src="/public/assets/query-param-propagation.js" defer></script>
