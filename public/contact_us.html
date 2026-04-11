@@ -406,8 +406,8 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 					<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מספר טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20" style="text-align: end;">
 				</div>
 				<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-issue_description elementor-col-100">
-					<label for="form-field-issue_description" class="elדementor-field-label elementor-screen-only">ספרו עליכם</label>
-					<textarea class="elementor-field-textual elementor-field elementor-size-md" name="form_fields[issue_description]" id="form-field-issue_description" rows="4" placeholder="ספרו עליכם"></textarea>
+					<label for="form-field-issue_description" class="elדementor-field-label elementor-screen-only">משהו שחשוב שנדע עליכם?</label>
+					<textarea class="elementor-field-textual elementor-field elementor-size-md" name="form_fields[issue_description]" id="form-field-issue_description" rows="4" placeholder="משהו שחשוב שנדע עליכם?"></textarea>
 				</div>
 				<div class="elementor-field-type-checkbox elementor-field-group elementor-column elementor-field-group-consent elementor-col-100">
 					<div class="trial-consent-wrap">
@@ -898,6 +898,7 @@ if (contactForm && submitBtn && btnTextSpan) {
         submitBtn.disabled = true;
         btnTextSpan.innerText = 'שולח...';
 
+        let redirectAfterSuccess = false;
         try {
             const payload = {
                 business_name: document.getElementById('form-field-fullname')?.value?.trim() || '',
@@ -922,8 +923,13 @@ if (contactForm && submitBtn && btnTextSpan) {
             const result = await response.json();
 
             if (result.success) {
-                showMessage(result.data?.message || 'נשלח בהצלחה', 'success');
-                // contactForm.reset();
+                redirectAfterSuccess = true;
+                const thankYouPath = '/public/contact-thank-you.html';
+                const thankYouUrl = window.mergeCurrentQueryParamsIntoUrl
+                    ? window.mergeCurrentQueryParamsIntoUrl(thankYouPath)
+                    : thankYouPath;
+                window.location.assign(thankYouUrl);
+                return;
             } else {
                 showMessage(result.data?.message || 'אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
             }
@@ -931,9 +937,12 @@ if (contactForm && submitBtn && btnTextSpan) {
             console.error('Form submission error:', error);
             showMessage('אירעה שגיאה בשליחת הטופס. נסה שנית.', 'error');
         } finally {
-            // Re-enable submit button
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'שלח/י';
+            if (!redirectAfterSuccess) {
+                submitBtn.disabled = false;
+                if (btnTextSpan) {
+                    btnTextSpan.innerText = 'שלח/י';
+                }
+            }
         }
     });
 }

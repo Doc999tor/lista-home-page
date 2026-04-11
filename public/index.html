@@ -766,11 +766,6 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 								<input size="1" type="tel" name="form_fields[phone_num]" id="form-field-phone_num" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="מספר טלפון" required="required" aria-required="true" pattern="(?:[0-9]|\(|\)|#|&amp;|\+|\*|=|\.|-){9,20}" title="Use digits and common phone symbols: () # & + * = . -" minlength="9" maxlength="20" style="text-align: end;">
 
 						</div>
-								<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-issue_description elementor-col-100">
-												<label for="form-field-issue_description" class="elementor-field-label elementor-screen-only">
-								ספרו עליכם							</label>
-														<textarea class="elementor-field-textual elementor-field elementor-size-md" name="form_fields[issue_description]" id="form-field-issue_description" rows="4" placeholder="ספרו עליכם"></textarea>
-											</div>
 								<div class="elementor-field-type-checkbox elementor-field-group elementor-column elementor-field-group-consent elementor-col-100">
 									<div class="trial-consent-wrap">
 										<div class="trial-consent-label">
@@ -800,28 +795,6 @@ body.pojo-a11y-focusable a:focus{ outline-style: solid !important;	outline-width
 				<div class="elementor-element elementor-element-index-form-textarea-icon elementor-widget elementor-widget-html" data-id="index-form-textarea-icon" data-element_type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
 			<style>
-#trial-form .elementor-field-type-textarea {
-    position: relative;
-}
-
-#trial-form .elementor-field-type-textarea .elementor-field {
-    padding-right: 50px !important;
-}
-
-#trial-form .elementor-field-type-textarea::before {
-    position: absolute;
-    right: 22px;
-    top: 10px;
-    width: 20px;
-    height: 20px;
-    content: "";
-    z-index: 999;
-    background-image: url("/public/assets/edit-2.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-
 #trial-form .elementor-field-group-consent {
     margin-top: 8px;
 }
@@ -1382,7 +1355,7 @@ window.addEventListener('load', () => {
                 const payload = {
                     business_name: document.getElementById('form-field-fullname')?.value?.trim() || '',
                     phone: phone_input?.value?.trim() || '',
-                    description: document.getElementById('form-field-issue_description')?.value?.trim() || '',
+                    description: '',
                     consent: Boolean(consentCheckbox?.checked)
                 };
 
